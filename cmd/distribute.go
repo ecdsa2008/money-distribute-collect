@@ -13,6 +13,7 @@ import (
 	"log"
 	"money-distribute-collect/src/utils"
 	"strings"
+	"time"
 )
 
 // distributeCmd represents the distribute command
@@ -81,8 +82,14 @@ var distributeCmd = &cobra.Command{
 			log.Panicln(err)
 		}
 
+		// 获取网络 ID（Chain ID）
+		networkID, err := client.NetworkID(context.Background())
+		if err != nil {
+			log.Panicf("Failed to get network ID: %v\n", err)
+		}
+
 		// 获取distributor账户nonce
-		distributorNonce, err := client.PendingTransactionCount(context.Background())
+		distributorNonce, err := client.PendingNonceAt(context.Background(), distributorAddress)
 		if err != nil {
 			log.Panicln("Can not get nonce ", err)
 		}
@@ -107,14 +114,14 @@ var distributeCmd = &cobra.Command{
 
 			// 构造交易
 			tx := types.NewTx(&types.LegacyTx{
-				Nonce:    uint64(distributorNonce),
+				Nonce:    distributorNonce,
 				To:       &targetAddress,
 				Value:    eachAccountDistributedNativeBigDecimal.BigInt(),
 				Gas:      21000,
 				GasPrice: txGasPrice,
 			})
 			// 签名交易
-			signedTx, err := types.SignTx(tx, types.HomesteadSigner{}, distributorPrivateKey)
+			signedTx, err := types.SignTx(tx, types.NewEIP155Signer(networkID), distributorPrivateKey)
 			if err != nil {
 				log.Panicln("Can not sign transaction ", err)
 			}
@@ -127,6 +134,7 @@ var distributeCmd = &cobra.Command{
 			txHashString := txHash.Hex()
 			log.Println("Send transaction success, nonce: ", distributorNonce, " txHash: ", txHashString, " to: ", targetAddress.Hex(), " index: ", i, " amount: ", eachAccountDistributed)
 			distributorNonce++
+			time.Sleep(1 * time.Second)
 		}
 		log.Println("Distribute success")
 	},

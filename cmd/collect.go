@@ -13,6 +13,7 @@ import (
 	"log"
 	"math/big"
 	"money-distribute-collect/src/utils"
+	"time"
 )
 
 // collectCmd represents the collect command
@@ -59,6 +60,12 @@ var collectCmd = &cobra.Command{
 		if err != nil {
 			log.Panicln(err)
 		}
+
+		networkID, err := client.NetworkID(context.Background())
+		if err != nil {
+			log.Panicln(err)
+		}
+
 		// 从start-index开始，到end-index结束，依次检查每个账户的余额，如果大于0，则转账到当前账户的master账户
 		for i := startIndex; i <= endIndex; i++ {
 			if i == masterIndex {
@@ -96,7 +103,7 @@ var collectCmd = &cobra.Command{
 				GasPrice: gasPrice,
 			})
 			// 签名交易
-			signedTx, err := types.SignTx(tx, types.HomesteadSigner{}, accountPrivateKey)
+			signedTx, err := types.SignTx(tx, types.NewEIP155Signer(networkID), accountPrivateKey)
 			if err != nil {
 				log.Panicln("Can not sign transaction ", err)
 			}
@@ -108,6 +115,7 @@ var collectCmd = &cobra.Command{
 			txHash := signedTx.Hash()
 			txHashString := txHash.Hex()
 			log.Println("Send transaction success, nonce: ", nonce, " address: ", accountAddress.Hex(), " index:", i, " txHash: ", txHashString)
+			time.Sleep(1 * time.Second)
 		}
 		log.Println("collect finished")
 	},
