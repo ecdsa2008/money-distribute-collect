@@ -70,7 +70,6 @@ var displayCmd = &cobra.Command{
 			privateKeyBytes := crypto.FromECDSA(accountPrivateKey)
 			//私钥Hex表示
 			privateKeyHexString := fmt.Sprintf("%x", privateKeyBytes)
-			fmt.Println("privateKeyHexString: ", "0x"+privateKeyHexString)
 			log.Println("Account index: ", i, " Address: ", accountAddress.Hex(), " Private key: ", privateKeyHexString, " Balance: ", humanReadableBalance, " Nonce: ", nonce)
 		}
 	},

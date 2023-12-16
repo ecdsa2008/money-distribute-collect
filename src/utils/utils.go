@@ -36,3 +36,9 @@ func GetAddressFromPublicKey(publicKey *ecdsa.PublicKey) common.Address {
 func GetAddressFromPrivateKey(privateKey *ecdsa.PrivateKey) common.Address {
 	return crypto.PubkeyToAddress(*GetPublicKey(privateKey))
 }
+
+func GenMnemonic() string {
+	entropy, _ := bip39.NewEntropy(128)
+	mnemonic, _ := bip39.NewMnemonic(entropy)
+	return mnemonic
+}

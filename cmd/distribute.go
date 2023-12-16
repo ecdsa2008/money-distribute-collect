@@ -134,7 +134,7 @@ var distributeCmd = &cobra.Command{
 			txHashString := txHash.Hex()
 			log.Println("Send transaction success, nonce: ", distributorNonce, " txHash: ", txHashString, " to: ", targetAddress.Hex(), " index: ", i, " amount: ", eachAccountDistributed)
 			distributorNonce++
-			time.Sleep(1 * time.Second)
+			time.Sleep(5 * time.Second)
 		}
 		log.Println("Distribute success")
 	},
