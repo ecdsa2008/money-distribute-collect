@@ -31,4 +31,11 @@ var walletCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(walletCmd)
 	walletCmd.Flags().BoolP("random-mnemonic", "r", false, "Generate random mnemonic")
+
+	walletCmd.AddCommand(&cobra.Command{
+		Use: "cancel",
+		Run: func(cmd *cobra.Command, args []string) {
+			log.Println("wallet cancel called")
+		},
+	})
 }
