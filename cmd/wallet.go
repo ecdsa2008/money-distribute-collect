@@ -22,7 +22,7 @@ var walletCmd = &cobra.Command{
 			mnemonic := utils.GenMnemonic()
 			log.Println("mnemonic:", mnemonic)
 			for i := 0; i < 20; i++ {
-				log.Println("index:", i, "address:", utils.GetAddressFromPrivateKey(utils.GetPrivateKey(mnemonic, uint(i))).Hex())
+				log.Println("index:", i, "address:", utils.GetAddressFromPrivateKey(utils.GetPrivateKey(mnemonic, uint(i))), "private key:", utils.PrivateKey2String(utils.GetPrivateKey(mnemonic, uint(i))), "public key:", utils.PublicKey2String(utils.GetPublicKey(utils.GetPrivateKey(mnemonic, uint(i)))))
 			}
 		}
 	},
